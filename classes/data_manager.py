@@ -38,7 +38,6 @@ class DataManager:
             self.data = self.data[1:]
 
     def get_current_price(self):
-        self.update_data()
         return self.data["Close"].iloc[-1]
     
     def update_indicators(self):
