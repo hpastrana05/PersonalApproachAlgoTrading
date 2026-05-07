@@ -1,48 +1,52 @@
 import logging
 
-from trading_api import post_place_market_order
-
 LOGGER = logging.getLogger("Position")
 
 class Position:
 
-    def __init__(self, ticker:str, action:str):
+    def __init__(self, ticker: str, action: str):
         self.ticker = ticker
         self.action = action
 
         self.position_open = False
-        self.position_quantity = 0
+        self.position_quantity = 0.0
+
+        self.average_price_paid = None
+        self.current_price = None
+        self.created_at = None
+
+        self.quantity_available_for_trading = 0.0
+        self.quantity_in_pies = 0.0
+
+        self.wallet_impact = None
+
+        self.status = "FLAT"
+
+    def update_from_response(self, response: dict):
+        self.position_open = True
+        self.position_quantity = response["quantity"]
+
+        self.average_price_paid = response["averagePricePaid"]
+        self.current_price = response["currentPrice"]
+        self.created_at = response["createdAt"]
+
+        self.quantity_available_for_trading = response["quantityAvailableForTrading"]
+        self.quantity_in_pies = response["quantityInPies"]
+
+        self.wallet_impact = response["walletImpact"]
+
+        self.status = "OPEN"
     
+    def update_as_closed(self):
+        self.position_open = False
+        self.status = "FLAT"
+        self.position_quantity = 0
 
-    def open_position(self, quantity:int):
-        if not self.position_open:
-            LOGGER.info(f"Opening position: {self.action} {quantity} of {self.ticker}")
+        self.average_price_paid = None
+        self.current_price = None
+        self.created_at = None
 
-            quantity = quantity if self.action == "BUY" else -quantity
+        self.quantity_available_for_trading = 0
+        self.quantity_in_pies = 0
 
-            response = post_place_market_order(quantity=quantity, ticker=self.ticker)
-
-            if response== None:
-                LOGGER.error(f"Failed to open position / place order: {self.action} {quantity} of {self.ticker}")
-                return
-            
-            LOGGER.info(f"Position opened successfully: {self.action} {quantity} of {self.ticker}")
-            self.position_open = True
-            self.position_quantity = response["quantity"]
-
-
-    def close_position(self):
-        if self.position_open:
-            LOGGER.info(f"Closing position: {self.action} {self.position_quantity} of {self.ticker}")
-
-            quantity = -self.position_quantity if self.action == "BUY" else self.position_quantity
-
-            response = post_place_market_order(quantity=quantity, ticker=self.ticker)
-
-            if response == None:
-                LOGGER.error(f"Failed to close position / place order: {self.action} {self.position_quantity} of {self.ticker}")
-                return
-        
-            LOGGER.info(f"Position closed successfully: {self.action} {self.position_quantity} of {self.ticker}")
-            self.position_open = False
-            self.position_quantity = 0
+        self.wallet_impact = None

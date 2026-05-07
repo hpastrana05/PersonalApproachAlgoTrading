@@ -7,7 +7,7 @@ logging.basicConfig(
     filename="logs/algoTrading.log", 
     format='%(asctime)s | %(name)s | %(levelname)s -> %(message)s', 
     datefmt='%m/%d/%Y %H:%M:%S',
-    level=logging.DEBUGb
+    level=logging.DEBUG
 )
 
 
@@ -22,8 +22,7 @@ def main():
 
         trading_engine.check_trading_strategy()
 
-        # trading_engine.log_performance()
-        # trading_engine.sync_with_broker()
+
 
         time.sleep(1)
 

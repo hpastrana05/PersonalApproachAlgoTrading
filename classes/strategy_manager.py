@@ -56,9 +56,10 @@ class StrategyManager:
     def check_strategy(self):
         if self.strategy.check_entry(self.data_manager.data):
             LOGGER.info(f"Entry signal triggered for {self.name}")
-            quantity = self.data_manager.get_current_price() / self.money
-            self.position.open_position(quantity)
+            return self.position.ticker, "BUY", self.data_manager.get_current_price()
         
         elif self.strategy.check_exit(self.data_manager.data):
             LOGGER.info(f"Exit signal triggered for {self.name}")
-            self.position.close_position()
+            return self.position.ticker, "SELL", self.data_manager.get_current_price()
+        
+        return self.position.ticker, "HOLD", self.data_manager.get_current_price()
