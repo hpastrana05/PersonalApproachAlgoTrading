@@ -12,9 +12,23 @@
         "slow": 25
     },
     "exit_rule": {
-        "type": "ema_cross_below",
-        "fast": 10,
-        "slow": 25
+        "type": "AND",
+        "signals": [
+            {
+                "type": "ema_cross_below",
+                "fast": 10,
+                "slow": 25
+            },
+            {
+                "type": "tp_percentage",
+                "percentage": 20
+            },
+            {
+                "type": "sl_percentage",
+                "percentage": 10
+            }
+        ]
+
     }
 
 }

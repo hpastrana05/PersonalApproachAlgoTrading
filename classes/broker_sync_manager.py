@@ -22,7 +22,7 @@ class BrokerSyncManager:
                 "cash": response["cash"],
                 "currency": response["currency"],
                 "investments": response["investments"],
-                "total_value": response["total_value"],
+                "total_value": response["total_value"] if "total_value" in response else 0,
             }
 
     def _sync_positions(self):
@@ -83,4 +83,5 @@ class BrokerSyncManager:
                 post_place_market_order(quantity=-quantity_to_sell, ticker=ticker)
             
         elif action == "HOLD":
+            self.sync()
             return

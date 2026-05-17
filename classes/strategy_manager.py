@@ -54,12 +54,17 @@ class StrategyManager:
         self.data_manager.update_data()
 
     def check_strategy(self):
+        current_price = self.data_manager.get_current_price()
+
+        if self.position.position_open:
+            if self.strategy.check_exit(self.data_manager.data, position=self.position):
+                LOGGER.info(f"Exit signal triggered for {self.name}")
+                return self.position.ticker, "SELL", current_price
+            
+            return self.position.ticker, "HOLD", current_price
+        
         if self.strategy.check_entry(self.data_manager.data):
             LOGGER.info(f"Entry signal triggered for {self.name}")
-            return self.position.ticker, "BUY", self.data_manager.get_current_price()
+            return self.position.ticker, "BUY", current_price
         
-        elif self.strategy.check_exit(self.data_manager.data):
-            LOGGER.info(f"Exit signal triggered for {self.name}")
-            return self.position.ticker, "SELL", self.data_manager.get_current_price()
-        
-        return self.position.ticker, "HOLD", self.data_manager.get_current_price()
+        return self.position.ticker, "HOLD", current_price

@@ -21,7 +21,7 @@ def get_paid_out_dividends(ticker:str, cursor="0", limit=20):
         "limit": str(limit)
     }
 
-    return make_request(method, url_ending, query=query)
+    return make_request(method, url_ending, payload=query)
 
 def get_list_generated_reports():
     """
@@ -92,7 +92,7 @@ def get_historical_orders_data(ticker:str, cursor="0", limit=20):
         "limit": str(limit)
     }
 
-    return make_request(method, url_ending, query=query)
+    return make_request(method, url_ending, payload=query)
 
 def get_transactions(time:str, cursor="0", limit=20):
     """

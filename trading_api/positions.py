@@ -17,4 +17,4 @@ def get_all_open_positions(ticker:str):
         "ticker": ticker
     }
 
-    return make_request(method, url_ending, query=query)
+    return make_request(method, url_ending, payload=query)

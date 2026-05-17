@@ -5,6 +5,8 @@ from signals.entry_exit_signals import *
 SIGNAL_REGISTRY = {
     "ema_cross_above": ema_cross_above,
     "ema_cross_below": ema_cross_below,
+    "tp_percentage": tp_percentage,
+    "sl_percentage": sl_percentage,
 }
 
 
@@ -13,7 +15,9 @@ class FunctionSignal:
         self.fn = fn
         self.params = params
     
-    def evaluate(self, data) -> bool:
+    def evaluate(self, data, position=None) -> bool:
+        if position:
+            return self.fn(data, position, **self.params)
         return self.fn(data, **self.params)
 
 
@@ -21,8 +25,8 @@ class AND:
     def __init__(self, *signals):
         self.signals = signals
     
-    def evaluate(self, data) -> bool:
-        return all(s.evaluate(data) for s in self.signals)
+    def evaluate(self, data, position=None) -> bool:
+        return all(s.evaluate(data, position=position) for s in self.signals)
 
 
 
@@ -30,8 +34,8 @@ class OR:
     def __init__(self, *signals):
         self.signals = signals
     
-    def evaluate(self, data) -> bool:
-        return any(s.evaluate(data) for s in self.signals)
+    def evaluate(self, data, position=None) -> bool:
+        return any(s.evaluate(data, position=position) for s in self.signals)
 
 def build_signal(config: dict):
     t = config["type"]

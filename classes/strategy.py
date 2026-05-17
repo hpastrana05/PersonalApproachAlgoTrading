@@ -9,5 +9,5 @@ class Strategy:
     def check_entry(self, data) -> bool:
         return self.entry_signal.evaluate(data)
 
-    def check_exit(self, data) -> bool:
-        return self.exit_signal.evaluate(data)
+    def check_exit(self, data, position) -> bool:
+        return self.exit_signal.evaluate(data,position=position)
